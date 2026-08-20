@@ -1,0 +1,1 @@
+(() => { const button = document.getElementById('theme-toggle'); const root = document.documentElement; const saved = localStorage.getItem('site-theme'); if (saved) root.dataset.theme = saved; button?.addEventListener('click', () => { const next = root.dataset.theme === 'dark' ? 'light' : 'dark'; root.dataset.theme = next; localStorage.setItem('site-theme', next); }); })();

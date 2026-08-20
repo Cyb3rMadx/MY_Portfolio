@@ -1,0 +1,25 @@
+(() => {
+  const data = SITE_DATA;
+  const text = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+  const html = (id, value) => { const el = document.getElementById(id); if (el) el.innerHTML = value; };
+  text('nav-brand-text', data.identity.handle); text('hero-title', data.identity.name); text('hero-role', data.identity.title); text('hero-statement', data.identity.statement); text('github-username', `@${data.social.githubUsername}`); text('footer-year', new Date().getFullYear()); text('footer-name', data.identity.name);
+  html('about-paragraphs', data.about.paragraphs.map(p => `<p>${p}</p>`).join(''));
+  html('trait-list', data.about.traits.map(item => `<span>${item}</span>`).join(''));
+  html('focus-list', data.about.currentFocus.map(item => `<div class="focus-item">${item}</div>`).join(''));
+  html('stage-key', data.stageOrder.map((stage, index) => `<span style="--swatch: ${['#65e6c2','#f2b86b','#86a8ff','#ff8f8f'][index] || '#9aaeb7'}">${stage}</span>`).join(''));
+  html('skill-groups', data.skillGroups.map(group => `<div class="skill-group"><h3>${group.group}</h3><div class="skill-list">${group.skills.map(skill => `<span class="skill-chip" title="${skill.stage}">${skill.name}</span>`).join('')}</div></div>`).join(''));
+  text('lab-intro', data.cyberLab.intro); text('lab-exp-title', data.cyberLab.experience.title); text('lab-exp-desc', data.cyberLab.experience.description); text('lab-disclaimer', data.cyberLab.disclaimer);
+  html('lab-tools', data.cyberLab.tools.map(tool => `<article class="tool-card"><h3>${tool.name}</h3><p>${tool.use}</p></article>`).join(''));
+  html('education-list', data.education.map(item => `<article class="education-item"><strong>${item.level}</strong><span>${item.institution}<br>${item.location}</span><span class="badge">${item.status}</span></article>`).join(''));
+  html('cert-list', data.certifications.map(item => `<article class="cert-item"><strong>${item.name}</strong><p>${item.issuer || 'Provider pending'} · ${item.detail}${item.date ? ` · ${item.date}` : ''}</p></article>`).join(''));
+  html('timeline-list', data.timeline.map(item => `<article class="timeline__item"><h3>${item.stage}</h3><p>${item.description}</p></article>`).join(''));
+  html('interests-grid', data.interests.map(item => `<article class="interest-card"><h3>${item.name}</h3><p>${item.note}</p></article>`).join(''));
+  const profile = document.getElementById('github-profile-link'); if (profile) profile.href = data.social.github;
+  const profilePhoto = document.getElementById('profile-photo'); profilePhoto?.addEventListener('load', () => document.getElementById('profile-slot')?.classList.add('has-image')); profilePhoto?.addEventListener('error', () => profilePhoto.remove());
+  const canonical = document.getElementById('canonical-url'); if (canonical && data.seo.url) canonical.href = data.seo.url;
+  const socialLinks = [['Facebook', data.social.facebook], ['Instagram', data.social.instagram]].map(([name, url]) => url ? `<a class="contact-link" href="${url}" target="_blank" rel="noopener">${name}</a>` : `<span class="contact-link contact-link--pending">${name} / URL pending</span>`).join('');
+  html('contact-side', `<h3>Open to thoughtful problems.</h3><p>For collaborations, project conversations, or simply saying hello, email is the fastest route.</p><a class="contact-link" href="mailto:${data.social.email}">${data.social.email}</a><a class="contact-link" href="${data.social.github}" target="_blank" rel="noopener">GitHub / ${data.social.githubUsername}</a>${socialLinks}`);
+  const navToggle = document.getElementById('nav-toggle'); const navLinks = document.getElementById('nav-links');
+  navToggle?.addEventListener('click', () => { const open = navLinks?.classList.toggle('is-open'); navToggle.setAttribute('aria-expanded', String(Boolean(open))); });
+  navLinks?.addEventListener('click', event => { if (event.target.closest('a')) { navLinks.classList.remove('is-open'); navToggle?.setAttribute('aria-expanded', 'false'); } });
+})();
