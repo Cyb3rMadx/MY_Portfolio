@@ -15,9 +15,5 @@ services:
         sync: false
       - key: ADMIN_PASSWORD
         sync: false
-      - key: DATABASE_URL
-        sync: false
       - key: CONTACT_TO_EMAIL
         value: business.rijan.np@gmail.com
-      - key: RESEND_API_KEY
-        sync: false

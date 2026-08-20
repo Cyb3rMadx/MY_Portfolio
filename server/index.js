@@ -4,103 +4,94 @@ const path = require('node:path');
 const express = require('express');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const { Pool } = require('pg');
 
 const app = express();
 const port = Number(process.env.PORT || 10000);
 const siteRoot = path.resolve(__dirname, '..');
+const dataDir = path.join(__dirname, 'data');
+const messagesFile = path.join(dataDir, 'messages.json');
+const credentialsFile = path.join(__dirname, '.admin-credentials');
 const retentionDays = Number(process.env.CONTACT_RETENTION_DAYS || 31);
-const ipSalt = process.env.IP_HASH_SALT;
-const adminUser = process.env.ADMIN_USER;
-const adminPassword = process.env.ADMIN_PASSWORD;
-const databaseUrl = process.env.DATABASE_URL;
+const ipSalt = process.env.IP_HASH_SALT || 'local-development-salt-change-before-public-deployment';
+const sessions = new Map();
 
-if (!ipSalt) console.warn('IP_HASH_SALT is missing. Set it before production.');
-if (!databaseUrl) console.warn('DATABASE_URL is missing. Contact storage will be unavailable.');
+fs.mkdirSync(dataDir, { recursive: true });
+if (!fs.existsSync(messagesFile)) fs.writeFileSync(messagesFile, '[]\n', { mode: 0o600 });
 
-const pool = databaseUrl ? new Pool({ connectionString: databaseUrl, ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false }) : null;
+function readMessages() {
+  try { return JSON.parse(fs.readFileSync(messagesFile, 'utf8')); }
+  catch { return []; }
+}
+function writeMessages(messages) {
+  const temporaryFile = `${messagesFile}.tmp`;
+  fs.writeFileSync(temporaryFile, `${JSON.stringify(messages, null, 2)}\n`, { mode: 0o600 });
+  fs.renameSync(temporaryFile, messagesFile);
+}
+function getAdminCredentials() {
+  if (process.env.ADMIN_USER && process.env.ADMIN_PASSWORD) return { user: process.env.ADMIN_USER, password: process.env.ADMIN_PASSWORD };
+  if (fs.existsSync(credentialsFile)) return JSON.parse(fs.readFileSync(credentialsFile, 'utf8'));
+  const generated = { user: 'admin', password: crypto.randomBytes(18).toString('base64url') };
+  fs.writeFileSync(credentialsFile, `${JSON.stringify(generated)}\n`, { mode: 0o600 });
+  console.log(`Admin panel: http://127.0.0.1:${port}/admin`);
+  console.log(`Admin username: ${generated.user}`);
+  console.log(`Admin password: ${generated.password}`);
+  return generated;
+}
+const admin = getAdminCredentials();
 
 app.set('trust proxy', 1);
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(express.json({ limit: '32kb' }));
+app.use(express.urlencoded({ extended: false }));
 app.use(morgan('tiny'));
 
-function hashIp(ip) {
-  return crypto.createHash('sha256').update(`${ipSalt || 'development-only'}:${ip}`).digest('hex');
+function hashIp(ip) { return crypto.createHash('sha256').update(`${ipSalt}:${ip}`).digest('hex'); }
+function escapeHtml(value) { return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character])); }
+function cookieValue(req, name) {
+  const cookies = String(req.headers.cookie || '').split(';');
+  const entry = cookies.find(item => item.trim().startsWith(`${name}=`));
+  return entry ? decodeURIComponent(entry.trim().slice(name.length + 1)) : '';
 }
-
-function basicAuth(req, res, next) {
-  if (!adminUser || !adminPassword) return res.status(503).send('Admin access is not configured.');
-  const header = req.headers.authorization || '';
-  const [scheme, encoded] = header.split(' ');
-  if (scheme !== 'Basic' || !encoded) return res.set('WWW-Authenticate', 'Basic realm="Portfolio admin"').status(401).send('Authentication required.');
-  const [user, password] = Buffer.from(encoded, 'base64').toString().split(':');
-  if (user !== adminUser || password !== adminPassword) return res.set('WWW-Authenticate', 'Basic realm="Portfolio admin"').status(401).send('Invalid credentials.');
-  next();
+function requireSession(req, res, next) {
+  const token = cookieValue(req, 'admin_session');
+  if (token && sessions.has(token)) return next();
+  res.redirect('/admin/login');
 }
-
-async function initDatabase() {
-  if (!pool) return;
-  await pool.query(`CREATE TABLE IF NOT EXISTS contact_messages (
-    id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(120) NOT NULL,
-    email VARCHAR(320) NOT NULL,
-    message TEXT NOT NULL,
-    ip_hash CHAR(64) NOT NULL,
-    user_agent TEXT,
-    referrer TEXT,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    status VARCHAR(20) NOT NULL DEFAULT 'new'
-  )`);
-  await pool.query('CREATE INDEX IF NOT EXISTS contact_messages_created_at_idx ON contact_messages (created_at DESC)');
-}
-
+function loginPage(error = '') { return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Admin login</title><style>body{min-height:100vh;display:grid;place-items:center;margin:0;background:#081015;color:#edf4f4;font:15px system-ui}.card{width:min(390px,calc(100% - 32px));padding:28px;background:#101a21;border:1px solid #29404a;border-radius:10px;box-shadow:0 24px 80px #0008}h1{margin:0 0 8px;font-size:28px}p{color:#9aaeb7}.error{color:#ff8f8f;font-size:13px}label{display:grid;gap:7px;margin-top:16px;color:#9aaeb7;font-size:12px}input{padding:12px;border:1px solid #29404a;border-radius:6px;background:#081015;color:#edf4f4;font:inherit}button{width:100%;margin-top:22px;padding:12px;border:0;border-radius:6px;background:#65e6c2;color:#06251f;font-weight:700;cursor:pointer}</style></head><body><main class="card"><div class="mono" style="color:#65e6c2;font:11px monospace">RIJAN.DEV / PRIVATE PANEL</div><h1>Welcome back.</h1><p>Sign in to view portfolio messages.</p>${error ? `<p class="error">${escapeHtml(error)}</p>` : ''}<form method="post" action="/admin/login"><label>Username<input name="username" autocomplete="username" required></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label><button type="submit">Log in</button></form></main></body></html>`; }
 function validateContact(body) {
-  const name = String(body.name || '').trim();
-  const email = String(body.email || '').trim();
-  const message = String(body.message || '').trim();
+  const name = String(body.name || '').trim(); const email = String(body.email || '').trim(); const message = String(body.message || '').trim();
   if (name.length < 2 || name.length > 120) return 'Name must be between 2 and 120 characters.';
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 320) return 'Enter a valid email address.';
   if (message.length < 10 || message.length > 5000) return 'Message must be between 10 and 5,000 characters.';
   return null;
 }
 
-app.get('/api/health', async (req, res) => {
-  try { if (pool) await pool.query('SELECT 1'); res.json({ ok: true, storage: Boolean(pool) }); }
-  catch { res.status(503).json({ ok: false, storage: false }); }
-});
-
-app.post('/api/contact', async (req, res) => {
+app.get('/api/health', (req, res) => res.json({ ok: true, storage: 'server-json', retentionDays }));
+app.post('/api/contact', (req, res) => {
   const error = validateContact(req.body);
   if (error) return res.status(400).json({ ok: false, error });
-  if (!pool) return res.status(503).json({ ok: false, error: 'Contact storage is not configured yet.' });
-  const ip = req.ip || req.socket.remoteAddress || 'unknown';
-  const ipHash = hashIp(ip);
-  const recent = await pool.query("SELECT COUNT(*)::int AS count FROM contact_messages WHERE ip_hash = $1 AND created_at > NOW() - INTERVAL '1 hour'", [ipHash]);
-  if (recent.rows[0].count >= 5) return res.status(429).json({ ok: false, error: 'Too many messages. Please try again later.' });
-  const { name, email, message } = req.body;
-  const result = await pool.query('INSERT INTO contact_messages (name, email, message, ip_hash, user_agent, referrer) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, created_at', [String(name).trim(), String(email).trim(), String(message).trim(), ipHash, req.get('user-agent') || null, req.get('referer') || null]);
-  if (process.env.RESEND_API_KEY && process.env.CONTACT_TO_EMAIL) {
-    try {
-      const { Resend } = require('resend');
-      const resend = new Resend(process.env.RESEND_API_KEY);
-      await resend.emails.send({ from: process.env.CONTACT_FROM_EMAIL || 'Portfolio <onboarding@resend.dev>', to: process.env.CONTACT_TO_EMAIL, replyTo: String(email).trim(), subject: `Portfolio message from ${String(name).trim()}`, text: `${String(message).trim()}\n\nReply to: ${String(email).trim()}` });
-    } catch (emailError) { console.error('Notification email failed:', emailError.message); }
-  }
-  res.status(201).json({ ok: true, id: result.rows[0].id });
+  const messages = readMessages();
+  const ipHash = hashIp(req.ip || req.socket.remoteAddress || 'unknown');
+  const recent = messages.filter(item => item.ipHash === ipHash && Date.now() - Date.parse(item.createdAt) < 60 * 60 * 1000);
+  if (recent.length >= 5) return res.status(429).json({ ok: false, error: 'Too many messages. Please try again later.' });
+  const item = { id: crypto.randomUUID(), name: String(req.body.name).trim(), email: String(req.body.email).trim(), message: String(req.body.message).trim(), ipHash, userAgent: req.get('user-agent') || '', referrer: req.get('referer') || '', createdAt: new Date().toISOString(), status: 'new' };
+  messages.unshift(item); writeMessages(messages);
+  res.status(201).json({ ok: true, id: item.id });
 });
-
-app.get('/admin', basicAuth, async (req, res) => {
-  if (!pool) return res.status(503).send('DATABASE_URL is not configured.');
-  const result = await pool.query(`SELECT id, name, email, message, ip_hash, user_agent, referrer, created_at, status FROM contact_messages ORDER BY created_at DESC LIMIT 200`);
-  const rows = result.rows.map(row => `<tr><td>${row.id}</td><td>${escapeHtml(row.created_at.toISOString())}</td><td>${escapeHtml(row.name)}</td><td><a href="mailto:${escapeHtml(row.email)}">${escapeHtml(row.email)}</a></td><td>${escapeHtml(row.message)}</td><td class="mono">${escapeHtml(row.ip_hash.slice(0, 12))}…</td><td>${escapeHtml(row.status)}</td></tr>`).join('');
-  res.send(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Portfolio messages</title><style>body{margin:0;padding:32px;background:#081015;color:#edf4f4;font:14px system-ui}h1{font-size:28px}p{color:#9aaeb7}.table-wrap{overflow:auto}table{width:100%;min-width:900px;border-collapse:collapse}th,td{text-align:left;vertical-align:top;padding:12px;border:1px solid #20323a}th{color:#65e6c2}td{white-space:pre-wrap}.mono{font-family:monospace;color:#f2b86b}</style></head><body><h1>Portfolio inbox</h1><p>Messages are retained for ${retentionDays} days. IP values are stored as salted hashes for abuse protection, not raw addresses.</p><div class="table-wrap"><table><thead><tr><th>ID</th><th>Received</th><th>Name</th><th>Email</th><th>Message</th><th>IP hash</th><th>Status</th></tr></thead><tbody>${rows || '<tr><td colspan="7">No messages yet.</td></tr>'}</tbody></table></div></body></html>`);
+app.get('/admin/login', (req, res) => res.send(loginPage()));
+app.post('/admin/login', (req, res) => {
+  if (req.body.username !== admin.user || req.body.password !== admin.password) return res.status(401).send(loginPage('Incorrect username or password.'));
+  const token = crypto.randomBytes(32).toString('hex');
+  sessions.set(token, Date.now() + 8 * 60 * 60 * 1000);
+  res.set('Set-Cookie', `admin_session=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=28800${process.env.NODE_ENV === 'production' ? '; Secure' : ''}`);
+  res.redirect('/admin');
 });
-
-function escapeHtml(value) { return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character])); }
-
+app.post('/admin/logout', requireSession, (req, res) => { sessions.delete(cookieValue(req, 'admin_session')); res.set('Set-Cookie', 'admin_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0'); res.redirect('/admin/login'); });
+app.get('/admin', requireSession, (req, res) => {
+  const rows = readMessages().map(row => `<tr><td>${escapeHtml(row.id.slice(0, 8))}</td><td>${escapeHtml(row.createdAt)}</td><td>${escapeHtml(row.name)}</td><td><a href="mailto:${escapeHtml(row.email)}">${escapeHtml(row.email)}</a></td><td>${escapeHtml(row.message)}</td><td class="mono">${escapeHtml(row.ipHash.slice(0, 12))}…</td><td>${escapeHtml(row.status)}</td></tr>`).join('');
+  res.send(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Portfolio messages</title><style>body{margin:0;padding:32px;background:#081015;color:#edf4f4;font:14px system-ui}h1{font-size:28px}p{color:#9aaeb7}.top{display:flex;justify-content:space-between;gap:16px;align-items:center}.logout{padding:9px 12px;border:1px solid #29404a;border-radius:6px;background:transparent;color:#edf4f4;cursor:pointer}.table-wrap{overflow:auto}table{width:100%;min-width:900px;border-collapse:collapse}th,td{text-align:left;vertical-align:top;padding:12px;border:1px solid #20323a}th{color:#65e6c2}td{white-space:pre-wrap}.mono{font-family:monospace;color:#f2b86b}</style></head><body><div class="top"><div><h1>Portfolio inbox</h1><p>Messages are stored on this server for ${retentionDays} days. IP values are salted one-way hashes for abuse protection.</p></div><form method="post" action="/admin/logout"><button class="logout" type="submit">Log out</button></form></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>Received</th><th>Name</th><th>Email</th><th>Message</th><th>IP hash</th><th>Status</th></tr></thead><tbody>${rows || '<tr><td colspan="7">No messages yet.</td></tr>'}</tbody></table></div></body></html>`);
+});
+app.use('/server', (req, res) => res.status(404).send('Not found'));
 app.use(express.static(siteRoot, { index: 'index.html' }));
-
-initDatabase().then(() => app.listen(port, () => console.log(`Portfolio server listening on ${port}`))).catch(error => { console.error('Database initialization failed:', error); process.exit(1); });
-
-setInterval(() => { if (pool) pool.query("DELETE FROM contact_messages WHERE created_at < NOW() - ($1 * INTERVAL '1 day')", [retentionDays]).catch(error => console.error('Retention cleanup failed:', error.message)); }, 24 * 60 * 60 * 1000).unref();
+setInterval(() => { const cutoff = Date.now() - retentionDays * 24 * 60 * 60 * 1000; writeMessages(readMessages().filter(item => Date.parse(item.createdAt) >= cutoff)); }, 24 * 60 * 60 * 1000).unref();
+app.listen(port, () => console.log(`Portfolio server listening on ${port}`));
