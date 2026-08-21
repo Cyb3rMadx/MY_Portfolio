@@ -12,7 +12,7 @@
   --danger: #ff8f8f;
   --shadow: 0 24px 80px rgba(0, 0, 0, .28);
   --radius: 10px;
-  --wrap: 1180px;
+  --wrap: 1720px;
   --ease: cubic-bezier(.22, 1, .36, 1);
 }
 [data-theme="light"] {

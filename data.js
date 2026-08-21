@@ -190,7 +190,7 @@ var SITE_DATA = {
         "Getting audio and UI state to stay in sync"
       ],
       status: "Complete",
-      links: { github: "", live: "" }
+      links: { github: "https://github.com/Cyb3rMadx/proposal-website", live: "https://proposal-website-g4n8.onrender.com" }
     },
     {
       title: "Proposal Website — With Backend",

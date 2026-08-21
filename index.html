@@ -43,6 +43,9 @@
 <link rel="stylesheet" href="css/sections.css" />
 <link rel="stylesheet" href="css/animations.css" />
 <link rel="stylesheet" href="css/responsive.css" />
+<link rel="stylesheet" href="css/desktop-3d.css" />
+<link rel="stylesheet" href="css/text-depth.css" />
+<link rel="stylesheet" href="css/scroll-world.css" />
 </head>
 <body>
 
@@ -106,6 +109,32 @@
       </div>
       <div class="hero__visual">
         <canvas id="hero-canvas"></canvas>
+        <div class="terminal terminal--orbit" aria-label="Live system monitor">
+          <div class="terminal__bar">
+            <span class="terminal__dot"></span><span class="terminal__dot"></span><span class="terminal__dot"></span>
+            <span class="terminal__title">monitor://rijan-core</span>
+          </div>
+          <div class="terminal__body terminal__body--monitor">
+            <span><b>NODE</b> rijan.dev</span>
+            <span><b>MODE</b> build / secure</span>
+            <span><b>STACK</b> web + systems</span>
+            <span><b>STATUS</b> <i>online</i></span>
+          </div>
+        </div>
+        <div class="terminal terminal--telemetry" aria-label="Live telemetry code stream">
+          <div class="terminal__bar">
+            <span class="terminal__dot"></span><span class="terminal__dot"></span><span class="terminal__dot"></span>
+            <span class="terminal__title">telemetry://stream</span>
+          </div>
+          <div class="terminal__body terminal__body--stream" data-code-stream="telemetry"></div>
+        </div>
+        <div class="terminal terminal--security" aria-label="Live security code stream">
+          <div class="terminal__bar">
+            <span class="terminal__dot"></span><span class="terminal__dot"></span><span class="terminal__dot"></span>
+            <span class="terminal__title">security://watch</span>
+          </div>
+          <div class="terminal__body terminal__body--stream" data-code-stream="security"></div>
+        </div>
         <div class="terminal" style="position:absolute; bottom:0; left:0; right:0; max-width:340px;">
           <div class="terminal__bar">
             <span class="terminal__dot"></span><span class="terminal__dot"></span><span class="terminal__dot"></span>
@@ -120,36 +149,30 @@
 
   <!-- ================= ABOUT ================= -->
   <section class="section" id="about">
+    <div class="section-visual section-visual--about" aria-hidden="true"><img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1400&q=85" alt="" loading="lazy" /></div>
     <div class="wrap">
       <div class="section__head reveal">
         <span class="eyebrow">01 · About</span>
-        <h2 class="section-title">Still early. Already building.</h2>
+        <h2 class="section-title">The work behind the interface.</h2>
       </div>
       <div class="about__grid">
-        <div class="about__text reveal" id="about-paragraphs"></div>
-        <div>
-          <div class="profile-slot panel reveal" id="profile-slot">
-            <div class="profile-slot__copy">
-              <span class="profile-slot__index mono">RIJAN / 01</span>
-              <h3>Building the signal.</h3>
-              <p>Software development, cybersecurity, and a lot of curiosity in progress.</p>
-              <span class="profile-slot__meta mono">NEPAL · SYSTEM STATUS: BUILDING</span>
-            </div>
-            <img id="profile-photo" src="public/images/profile/profile.jpg" alt="Portrait of Rijan Adhikari" loading="eager" fetchpriority="high" decoding="async" />
-            <div class="profile-slot__fallback"><span class="mono">PHOTO SLOT / PROFILE</span><p>Add your photograph at <strong>public/images/profile/profile.jpg</strong>.</p></div>
-          </div>
-          <div class="trait-list" id="trait-list"></div>
-          <div class="panel about__side" style="margin-top:26px;">
-            <h3>Current Focus</h3>
+        <div class="about__side about__side--primary reveal">
+          <div class="panel about-focus">
+            <span class="eyebrow">Operating focus</span>
+            <h3>Curiosity into capability.</h3>
+            <p>Every experiment is part of a wider system: learn the fundamentals, build useful things, then understand how to protect them.</p>
             <div id="focus-list"></div>
           </div>
+          <div class="trait-list" id="trait-list"></div>
         </div>
+        <div class="about__text reveal" id="about-paragraphs"></div>
       </div>
     </div>
   </section>
 
   <!-- ================= SKILLS ================= -->
   <section class="section" id="skills">
+    <div class="section-visual section-visual--skills" aria-hidden="true"><img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=1400&q=85" alt="" loading="lazy" /></div>
     <div class="wrap">
       <div class="section__head reveal">
         <span class="eyebrow">02 · Tech Stack</span>
@@ -338,11 +361,14 @@
 <script src="js/main.js"></script>
 <script src="js/boot.js"></script>
 <script src="js/hud.js"></script>
+<script src="js/scene-scroll.js"></script>
 <script src="js/cursor.js"></script>
 <script src="js/three-scene.js"></script>
+<script src="js/code-streams.js"></script>
 <script src="js/constellation.js"></script>
 <script src="js/projects.js"></script>
 <script src="js/github.js"></script>
+<script src="js/text-depth.js"></script>
 <script src="js/contact.js"></script>
 <script src="js/reveal.js"></script>
 <script src="js/tilt.js"></script>
