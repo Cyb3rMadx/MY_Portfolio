@@ -48,6 +48,9 @@
 	scene.add(group, particles);
 
 	const pointer = { x: 0, y: 0 };
+	const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+	let active = true;
+	let animationFrame = 0;
 	addEventListener('pointermove', event => {
 		pointer.x = (event.clientX / innerWidth - .5) * .25;
 		pointer.y = (event.clientY / innerHeight - .5) * .18;
@@ -55,13 +58,25 @@
 	const resize = () => {
 		const rect = canvas.getBoundingClientRect();
 		renderer.setSize(rect.width, rect.height, false);
+		canvas.width = Math.max(1, Math.floor(rect.width * renderer.getPixelRatio()));
+		canvas.height = Math.max(1, Math.floor(rect.height * renderer.getPixelRatio()));
 		camera.aspect = rect.width / rect.height;
 		camera.updateProjectionMatrix();
 	};
 	addEventListener('resize', resize);
 	resize();
-	const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+	const wake = () => {
+		if (!animationFrame && active && !document.hidden) animationFrame = requestAnimationFrame(animate);
+	};
+	const observer = new IntersectionObserver(entries => {
+		active = entries[0].isIntersecting;
+		wake();
+	});
+	observer.observe(canvas);
+	document.addEventListener('visibilitychange', wake);
 	const animate = () => {
+		animationFrame = 0;
+		if (!active || document.hidden) return;
 		if (!reduce) {
 			group.rotation.y += .002;
 			group.rotation.x += .001;
@@ -72,7 +87,7 @@
 			group.rotation.x += (pointer.y - group.rotation.x) * .0008;
 		}
 		renderer.render(scene, camera);
-		requestAnimationFrame(animate);
+		if (!reduce) animationFrame = requestAnimationFrame(animate);
 	};
-	animate();
+	wake();
 })();

@@ -42,14 +42,14 @@ var SITE_DATA = {
     {
       level: "Grade 10",
       institution: "Jana Jyoti Model Secondary School",
-      location: "Lalbandi-09, Sarlahi, Nepal",
-      status: "Completed"
+      institutionUrl: "https://jjmc.edu.np/",
+      location: "Lalbandi-09, Sarlahi, Nepal"
     },
     {
-      level: "+2 Management",
-      institution: "Computer Science",
-      location: "Nepal",
-      status: "In Progress"
+      level: "+2",
+      institution: "The Times International College",
+      institutionUrl: "https://timescollege.edu.np/",
+      location: "Nepal"
     }
   ],
 

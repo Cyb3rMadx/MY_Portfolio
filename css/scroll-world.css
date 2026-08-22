@@ -76,6 +76,52 @@
   transform: translate3d(0, 0, 0) rotateX(0deg);
 }
 
+.section > .wrap > .panel,
+.section > .wrap > .lab,
+.section > .wrap > .grid,
+.section > .wrap > [id$="-list"],
+.section > .wrap > [id$="-grid"],
+.section > .wrap > .timeline {
+  transform: perspective(1400px) rotateX(calc(var(--scene-progress) * -2.2deg)) rotateY(calc(var(--scene-progress) * .8deg)) translate3d(0, calc(var(--scene-progress) * -12px), 0);
+  transform-style: preserve-3d;
+  transition: transform .25s linear;
+  will-change: transform;
+}
+
+.section > .wrap > .panel,
+.section > .wrap > .lab,
+.education-item,
+.cert-item,
+.timeline__item,
+.tool-card,
+.interest-card,
+.project-card,
+.repo {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+.education-item,
+.cert-item,
+.timeline__item,
+.tool-card,
+.interest-card,
+.project-card,
+.repo {
+  transition: transform .5s cubic-bezier(.22, 1, .36, 1), border-color .3s ease, box-shadow .5s ease;
+}
+
+.education-item:hover,
+.cert-item:hover,
+.timeline__item:hover,
+.tool-card:hover,
+.interest-card:hover,
+.project-card:hover,
+.repo:hover {
+  transform: translate3d(0, -4px, 18px);
+  box-shadow: 0 18px 36px color-mix(in srgb, var(--bg) 45%, transparent);
+}
+
 @media (max-width: 767px) {
   .section-visual { right: -30vw; width: 90vw; height: 58%; opacity: .07; transform: translate3d(0, calc(var(--scene-progress) * -24px), 0); }
   .section-visual--skills { left: -30vw; transform: translate3d(0, calc(var(--scene-progress) * -24px), 0); }
@@ -87,5 +133,18 @@
   .section-visual img { transform: none; transition: none; }
   .section__head.reveal,
   .about__grid .reveal,
-  .skills__layout .reveal { transform: none; }
+  .skills__layout .reveal,
+  .section > .wrap > .panel,
+  .section > .wrap > .lab,
+  .section > .wrap > .grid,
+  .section > .wrap > [id$="-list"],
+  .section > .wrap > [id$="-grid"],
+  .section > .wrap > .timeline,
+  .education-item,
+  .cert-item,
+  .timeline__item,
+  .tool-card,
+  .interest-card,
+  .project-card,
+  .repo { transform: none; transition: none; box-shadow: none; }
 }
