@@ -4,22 +4,22 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="google-site-verification" content="6AKXzxO_LDrypOAFn93_9QoaP2z--FCR42l4iJ09Dcc" />
-<title>Rijan Adhikari — Software Developer & Cybersecurity Enthusiast</title>
-<meta name="description" content="Portfolio of Rijan Adhikari — a self-taught software developer and cybersecurity enthusiast from Nepal, building projects and learning security one lab at a time." />
+<title>Rijan Adhikari, Software Developer & Cybersecurity Enthusiast</title>
+<meta name="description" content="Portfolio of Rijan Adhikari, a self-taught software developer and cybersecurity enthusiast from Nepal, building projects and learning security one lab at a time." />
 <link rel="canonical" id="canonical-url" href="" />
 <meta name="theme-color" content="#05070a" />
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%2305070a'/><path d='M9 9 L16 23 L23 9' stroke='%235eead4' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>" />
 
 <!-- Open Graph -->
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Rijan Adhikari — Software Developer & Cybersecurity Enthusiast" />
+<meta property="og:title" content="Rijan Adhikari, Software Developer & Cybersecurity Enthusiast" />
 <meta property="og:description" content="Self-taught developer and cybersecurity enthusiast from Nepal. Building projects, running labs, learning in public." />
 <meta property="og:image" content="public/images/gallery/og-cover.jpg" />
 <meta property="og:site_name" content="Rijan Adhikari" />
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Rijan Adhikari — Software Developer & Cybersecurity Enthusiast" />
+<meta name="twitter:title" content="Rijan Adhikari, Software Developer & Cybersecurity Enthusiast" />
 <meta name="twitter:description" content="Self-taught developer and cybersecurity enthusiast from Nepal. Building projects, running labs, learning in public." />
 <meta name="twitter:image" content="public/images/gallery/og-cover.jpg" />
 <script type="application/ld+json">
@@ -45,7 +45,6 @@
 <link rel="stylesheet" href="css/animations.css" />
 <link rel="stylesheet" href="css/responsive.css" />
 <link rel="stylesheet" href="css/desktop-3d.css" />
-<link rel="stylesheet" href="css/text-depth.css" />
 <link rel="stylesheet" href="css/scroll-world.css" />
 </head>
 <body>
@@ -99,7 +98,10 @@
     <div class="wrap hero__inner">
       <div>
         <div class="hero__kicker"><span>SYSTEM STATUS: BUILDING</span></div>
-        <h1 class="hero__title" id="hero-title">Rijan Adhikari</h1>
+        <div class="hero__identity">
+          <img class="hero__avatar" src="public/images/profile/Profile.jpg" alt="Rijan Adhikari" width="112" height="112">
+          <h1 class="hero__title" id="hero-title">Rijan Adhikari</h1>
+        </div>
         <p class="hero__role" id="hero-role">Software Developer &amp; Cybersecurity Enthusiast</p>
         <p class="hero__statement" id="hero-statement"></p>
         <div class="hero__cta">
@@ -178,7 +180,7 @@
       <div class="section__head reveal">
         <span class="eyebrow">02 · Tech Stack</span>
         <h2 class="section-title">Learning in the open</h2>
-        <p class="section-lede">No fake percentage bars. Every skill below is labeled by how far along it actually is — hover a node to see it.</p>
+        <p class="section-lede">No fake percentage bars. Every skill below is labeled by how far along it actually is, hover a node to see it.</p>
       </div>
       <div class="skills__layout">
         <div class="reveal">
@@ -216,7 +218,7 @@
       <div class="section__head reveal">
         <span class="eyebrow">04 · Project Explorer</span>
         <h2 class="section-title">Featured work &amp; experiments</h2>
-        <p class="section-lede">Filter by category — from flagship builds to the small experiments that don't usually make the cut.</p>
+        <p class="section-lede">Filter by category, from flagship builds to the small experiments that don't usually make the cut.</p>
       </div>
       <div class="project-filters" id="project-filters"></div>
       <div class="project-grid" id="project-grid"></div>
@@ -272,7 +274,7 @@
       <div class="section__head--center reveal">
         <span class="eyebrow" style="justify-content:center;">08 · Mission</span>
         <h2 class="section-title" style="margin-left:auto;margin-right:auto;">Learn → Build → Secure → Master → Build the Business</h2>
-        <p class="section-lede" style="margin-left:auto;margin-right:auto;">The long-term plan: become a cybersecurity expert, then build a cybersecurity business in Nepal — roughly a ten-year horizon, not a claim about today.</p>
+        <p class="section-lede" style="margin-left:auto;margin-right:auto;">The long-term plan: become a cybersecurity expert, then build a cybersecurity business in Nepal, roughly a ten-year horizon, not a claim about today.</p>
       </div>
       <div class="timeline" id="timeline-wrap">
         <div class="timeline__track"></div>
@@ -327,30 +329,24 @@
 
 </main>
 
-<footer class="footer">
-  <div class="wrap footer__row">
-    <span>© <span id="footer-year"></span> <span id="footer-name"></span>. Built from scratch, mistakes included.</span>
-    <span>Press <kbd class="mono">\`</kbd> for a surprise.</span>
-  </div>
-</footer>
-
-<!-- Hidden terminal easter egg -->
-<div class="hidden-terminal" id="hidden-terminal" role="dialog" aria-modal="true" aria-label="Hidden terminal">
-  <div class="terminal">
-    <div class="terminal__bar">
-      <span class="terminal__dot"></span><span class="terminal__dot"></span><span class="terminal__dot"></span>
-      <span class="terminal__title">rijan@hidden:~</span>
-      <button id="hidden-terminal-close" aria-label="Close terminal" style="margin-left:auto;background:none;border:none;color:#8b96a5;">✕</button>
+<div class="video-modal" id="video-modal" aria-hidden="true">
+  <div class="video-modal__backdrop" data-close-modal aria-hidden="true"></div>
+  <div class="video-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="video-modal-title">
+    <div class="video-modal__header">
+      <h3 id="video-modal-title">Tutorial</h3>
+      <button class="video-modal__close" type="button" aria-label="Close tutorial" data-close-modal>✕</button>
     </div>
-    <div class="hidden-terminal__log" id="hidden-terminal-log">
-      <div>type "help" to see available commands.</div>
-    </div>
-    <div class="hidden-terminal__input-row">
-      <span>$</span>
-      <input class="hidden-terminal__input" id="hidden-terminal-input" type="text" autocomplete="off" spellcheck="false" aria-label="Terminal command input" />
+    <div class="video-modal__frame-wrap">
+      <iframe id="video-frame" src="about:blank" title="Cybersecurity tutorial video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
     </div>
   </div>
 </div>
+
+<footer class="footer">
+  <div class="wrap footer__row">
+    <span>© <span id="footer-year"></span> <span id="footer-name"></span>. Built from scratch, mistakes included.</span>
+  </div>
+</footer>
 
 <!-- ================= SCRIPTS ================= -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -363,16 +359,13 @@
 <script src="js/boot.js"></script>
 <script src="js/hud.js"></script>
 <script src="js/scene-scroll.js"></script>
-<script src="js/cursor.js"></script>
 <script src="js/three-scene.js"></script>
 <script src="js/code-streams.js"></script>
 <script src="js/constellation.js"></script>
 <script src="js/projects.js"></script>
 <script src="js/github.js"></script>
-<script src="js/text-depth.js"></script>
 <script src="js/contact.js"></script>
 <script src="js/reveal.js"></script>
 <script src="js/tilt.js"></script>
-<script src="js/easter-eggs.js"></script>
 </body>
 </html>

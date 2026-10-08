@@ -1,6 +1,6 @@
 @keyframes visual-float {
-  0%, 100% { transform: translate3d(0, 0, 0) rotateX(0deg); }
-  50% { transform: translate3d(0, -10px, 0) rotateX(1deg); }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 }
 
 .hero {
@@ -48,13 +48,13 @@
 .terminal--telemetry {
   top: 28%;
   left: 0;
-  transform: translateZ(58px) rotateY(4deg);
+  transform: translateY(4px);
 }
 
 .terminal--security {
   right: 12%;
   bottom: 18%;
-  transform: translateZ(42px) rotateY(-4deg);
+  transform: translateY(-4px);
 }
 
 .terminal__body--stream {
@@ -92,8 +92,8 @@
 .terminal__body--monitor i { color: var(--accent); font-style: normal; }
 
 @keyframes monitor-drift {
-  0%, 100% { transform: translate3d(0, 36px, 0) rotateY(-3deg); }
-  50% { transform: translate3d(-10px, 22px, 0) rotateY(3deg); }
+  0%, 100% { transform: translateY(18px); }
+  50% { transform: translateY(8px) translateX(-6px); }
 }
 
 .lab,

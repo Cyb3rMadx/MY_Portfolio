@@ -11,7 +11,7 @@ var SITE_DATA = {
     title: "Software Developer & Cybersecurity Enthusiast",
     location: "Nepal",
     statement:
-      "I build things, break things, and figure out how they work in between. Currently leveling up in software development and cybersecurity — one project, one lab, one late night at a time.",
+      "I build things, break things, and figure out how they work in between. Currently leveling up in software development and cybersecurity, one project, one lab, one late night at a time.",
     heroLines: [
       "> initializing rijan.dev",
       "> loading creativity...",
@@ -23,9 +23,9 @@ var SITE_DATA = {
 
   about: {
     paragraphs: [
-      "I'm a young technology enthusiast who enjoys designing, building, and experimenting with technology. Right now I'm developing my skills in software development and cybersecurity — jumping between projects, operating systems, networking labs, web development, and whatever new tool catches my attention that week.",
+      "I'm a young technology enthusiast who enjoys designing, building, and experimenting with technology. Right now I'm developing my skills in software development and cybersecurity, jumping between projects, operating systems, networking labs, web development, and whatever new tool catches my attention that week.",
       "I'm curious about how things work. I like breaking problems down until they make sense, and I want to eventually use that knowledge to build and protect real systems.",
-      "This site is not a finished résumé — it's a snapshot of someone actively becoming dangerous at this stuff. Long-term, I want to become a cybersecurity expert and build something meaningful in Nepal."
+      "This site is not a finished résumé, it's a snapshot of someone actively becoming dangerous at this stuff. Long-term, I want to become a cybersecurity expert and build something meaningful in Nepal."
     ],
     traits: [
       "Independent",
@@ -136,22 +136,22 @@ var SITE_DATA = {
 
   cyberLab: {
     intro:
-      "Networking and security are where curiosity turns into practice. This is the toolkit I actually use in labs and the one competition I've been part of — not a claim to professional pentesting experience.",
+      "Networking and security are where curiosity turns into practice. This is the toolkit I actually use in labs and the one competition I've been part of, not a claim to professional pentesting experience.",
     tools: [
-      { name: "Nmap", use: "Network discovery & port scanning" },
-      { name: "Wireshark", use: "Packet capture & traffic analysis" },
-      { name: "Burp Suite", use: "Web application testing" },
-      { name: "Metasploit", use: "Exploitation framework, lab use" },
-      { name: "Kali Linux", use: "Primary security testing OS" },
-      { name: "Aircrack-ng", use: "Wireless network auditing" }
+      { name: "Nmap", use: "Network discovery & port scanning", link: "https://nmap.org/download.html", videoLabel: "How Nmap really works | David Bombal", videoEmbedUrl: "https://www.youtube.com/embed/F2PXe_o7KqM" },
+      { name: "Wireshark", use: "Packet capture & traffic analysis", link: "https://www.wireshark.org/download.html", videoLabel: "Wireshark Tutorial: Installation and Password Sniffing | David Bombal", videoEmbedUrl: "https://www.youtube.com/embed/4_7A8Ikp5Cc" },
+      { name: "Burp Suite", use: "Web application testing", link: "https://portswigger.net/burp/professional", videoLabel: "Burp Suite Tutorial | David Bombal", videoEmbedUrl: "https://www.youtube.com/embed/IWWYNDiwYOA" },
+      { name: "Metasploit", use: "Exploitation framework, lab use", link: "https://www.metasploit.com/download", videoLabel: "David Bombal Metasploit tutorial", videoEmbedUrl: "https://www.youtube.com/embed/bBut8D7usKA" },
+      { name: "Kali Linux", use: "Primary security testing OS", link: "https://www.kali.org/get-kali/", videoLabel: "David Bombal Kali Linux tutorial", videoEmbedUrl: "https://www.youtube.com/embed/MPkni85O9JA" },
+      { name: "Aircrack-ng", use: "Wireless network auditing", link: "https://www.aircrack-ng.org/downloads.html", videoLabel: "David Bombal Wi-Fi lab demo", videoEmbedUrl: "https://www.youtube.com/embed/X49lIPHcurE" }
     ],
     experience: {
       title: "Cybersecurity Competition",
       description:
-        "Took part in a cybersecurity competition involving authorized attempts to access Wi-Fi and CCTV systems in a controlled, competitive environment. It's the kind of hands-on exposure that made networking and security click for me — not a claim of professional security work."
+        "Took part in a cybersecurity competition involving authorized attempts to access Wi-Fi and CCTV systems in a controlled, competitive environment. It's the kind of hands-on exposure that made networking and security click for me, not a claim of professional security work."
     },
     disclaimer:
-      "Everything above reflects learning, labs, and authorized practice — not professional penetration testing or security consulting."
+      "Everything above reflects learning, labs, and authorized practice, not professional penetration testing or security consulting."
   },
 
   projectCategories: ["Featured", "Web Development", "Cybersecurity / Labs", "Experiments", "Learning Projects"],
@@ -161,9 +161,9 @@ var SITE_DATA = {
       title: "NEPSE Paper Trading Backend",
       categories: ["Featured", "Web Development"],
       summary:
-        "A backend for simulated (paper) trading on Nepal's stock exchange — built to learn real backend architecture, not to generate real financial results.",
+        "A backend for simulated (paper) trading on Nepal's stock exchange, built to learn real backend architecture, not to generate real financial results.",
       problem:
-        "I wanted to understand how a real trading system is structured end-to-end — data models, API design, and persistence — using something I actually care about: NEPSE.",
+        "I wanted to understand how a real trading system is structured end-to-end, data models, API design, and persistence, using something I actually care about: NEPSE.",
       built:
         "A FastAPI backend with structured models and schemas for simulated trades, separated cleanly into main application, database layer, models, and schemas.",
       stack: ["Python", "FastAPI", "SQL Database", "Pydantic schemas"],
@@ -171,17 +171,35 @@ var SITE_DATA = {
         "Designing data models that actually reflect how trades and holdings relate to each other",
         "Structuring the project so backend logic stays separate from data schemas"
       ],
-      status: "In development — learning project, not production-grade",
+      status: "In development, learning project, not production-grade",
       links: { github: "", live: "" },
       files: ["main.py", "database.py", "models.py", "schemas.py", "requirements.txt"]
+    },
+    {
+      title: "Restaurant Billing System",
+      categories: ["Featured", "Web Development"],
+      summary:
+        "A fully developed and optimized restaurant billing system with a clean workflow for generating bills, tracking items, and managing sales efficiently.",
+      problem:
+        "I wanted to build a practical real-world business system that felt useful beyond a demo, focusing on speed, clarity, and daily usability for restaurant operations.",
+      built:
+        "A polished billing interface and logic flow designed for quick order entry, itemized totals, and efficient checkout experience with optimized front-end behavior.",
+      stack: ["HTML", "CSS", "JavaScript", "Modern UI", "Billing Logic"],
+      challenges: [
+        "Designing a smoother billing workflow with accurate calculations and fast interactions",
+        "Keeping the UI clean while supporting real-time order and totals management"
+      ],
+      status: "Fully developed and optimized",
+      links: { github: "", live: "" },
+      files: ["index.html", "style.css", "script.js", "billing.js", "assets"]
     },
     {
       title: "Proposal Website",
       categories: ["Featured", "Web Development", "Experiments"],
       summary:
-        "An interactive, animated proposal-style website — used as a playground for custom UI/UX, motion, and sound.",
+        "An interactive, animated proposal-style website, used as a playground for custom UI/UX, motion, and sound.",
       problem:
-        "I wanted to push my frontend skills past static layouts — real interaction design, animated interfaces, and a personalized experience.",
+        "I wanted to push my frontend skills past static layouts, real interaction design, animated interfaces, and a personalized experience.",
       built:
         "A fully custom animated interface with interactive buttons, music integration, and a personalized flow from start to finish.",
       stack: ["HTML", "CSS", "JavaScript"],
@@ -193,7 +211,7 @@ var SITE_DATA = {
       links: { github: "https://github.com/Cyb3rMadx/proposal-website", live: "https://proposal-website-g4n8.onrender.com" }
     },
     {
-      title: "Proposal Website — With Backend",
+      title: "Proposal Website With Backend",
       categories: ["Web Development"],
       summary:
         "A follow-up version of the proposal website concept, extended with backend functionality connecting frontend interactions to server-side logic.",
@@ -205,14 +223,14 @@ var SITE_DATA = {
       links: { github: "", live: "" }
     },
     {
-      title: "Calculator — First Project",
+      title: "Calculator First Project",
       categories: ["Learning Projects"],
-      summary: "My first programming/web project. Not revolutionary — the actual starting point.",
+      summary: "My first programming/web project. Not revolutionary, the actual starting point.",
       problem: "Learn the fundamentals of building and shipping something that runs in a browser.",
       built: "A working calculator interface using core HTML, CSS, and JavaScript.",
       stack: ["HTML", "CSS", "JavaScript"],
       challenges: ["Handling input logic and edge cases for the first time"],
-      status: "Complete — kept as a milestone, not a flagship",
+      status: "Complete, kept as a milestone, not a flagship",
       links: { github: "", live: "" }
     },
     {
@@ -263,14 +281,14 @@ var SITE_DATA = {
 
   timeline: [
     { stage: "Learn", description: "Fundamentals of programming, networking, and security concepts." },
-    { stage: "Build", description: "Shipping real projects — web apps, backends, experiments." },
+    { stage: "Build", description: "Shipping real projects, web apps, backends, experiments." },
     { stage: "Secure", description: "Hands-on practice with security tools and lab environments." },
     { stage: "Master", description: "Deepening cybersecurity expertise through consistent practice." },
-    { stage: "Build the Business", description: "Long-term goal: a cybersecurity business in Nepal, ~10 years out." }
+    { stage: "Build the Business", description: "Long-term goal: a cybersecurity business in Nepal, about 10 years out." }
   ],
 
   interests: [
-    { name: "Gaming", note: "Competitive and exploratory — a good way to reset the brain." },
+    { name: "Gaming", note: "Competitive and exploratory, a good way to reset the brain." },
     { name: "Trading / NEPSE", note: "Following Nepal's stock market, currently through paper trading." },
     { name: "Vibecoding", note: "AI-assisted, exploratory creative coding sessions." },
     { name: "Enjoying Life", note: "Not everything has to be a project." }
@@ -278,6 +296,7 @@ var SITE_DATA = {
 
   social: {
     email: "business.rijan.np@gmail.com",
+    whatsapp: "9779708741190",
     github: "https://github.com/Cyb3rMadx",
     githubUsername: "Cyb3rMadx",
     facebook: "https://www.facebook.com/profile.php?id=61585298038728",
@@ -285,9 +304,9 @@ var SITE_DATA = {
   },
 
   seo: {
-    title: "Rijan Adhikari — Software Developer & Cybersecurity Enthusiast",
+    title: "Rijan Adhikari, Software Developer & Cybersecurity Enthusiast",
     description:
-      "Portfolio of Rijan Adhikari — a self-taught software developer and cybersecurity enthusiast from Nepal, building projects and learning security one lab at a time.",
+      "Portfolio of Rijan Adhikari, a self-taught software developer and cybersecurity enthusiast from Nepal, building projects and learning security one lab at a time.",
     url: ""
   }
 };

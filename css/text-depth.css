@@ -1,34 +1,32 @@
 .hero__title,
 .section-title {
-  perspective: 900px;
-  transform: rotateX(var(--text-rotate-x, 0deg)) rotateY(var(--text-rotate-y, 0deg)) translate3d(var(--text-shift-x, 0px), var(--text-shift-y, 0px), 0);
-  transform-style: preserve-3d;
-  transition: transform .45s cubic-bezier(.22, 1, .36, 1);
+  transform: none;
+  transition: color .25s ease;
 }
 
 .text-depth__char {
   display: inline-block;
-  transform: translateZ(0);
+  transform: translateY(0);
   transform-origin: 50% 100%;
   animation: text-depth-in .8s cubic-bezier(.22, 1, .36, 1) both;
   animation-delay: calc(var(--char-index) * 24ms);
   text-shadow: 0 1px 0 color-mix(in srgb, var(--text) 38%, transparent), 0 12px 24px color-mix(in srgb, var(--accent) 12%, transparent);
-  transition: transform .35s cubic-bezier(.22, 1, .36, 1), color .35s ease, text-shadow .35s ease;
+  transition: transform .25s ease, color .25s ease, text-shadow .25s ease;
 }
 
 .text-depth__word { display: inline-block; white-space: nowrap; }
 
 .text-depth__char:hover {
   color: var(--accent);
-  transform: translate3d(0, -8px, 26px) rotateX(-12deg);
-  text-shadow: 0 16px 30px color-mix(in srgb, var(--accent) 30%, transparent);
+  transform: translateY(-3px);
+  text-shadow: 0 12px 20px color-mix(in srgb, var(--accent) 24%, transparent);
 }
 
 .text-depth__space { display: inline-block; width: .28em; }
 
 @keyframes text-depth-in {
-  from { opacity: 0; transform: translate3d(0, 24px, -80px) rotateX(70deg); }
-  to { opacity: 1; transform: translate3d(0, 0, 0) rotateX(0deg); }
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .project-card__demo,

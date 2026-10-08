@@ -1,1 +1,18 @@
-(() => { if (!matchMedia('(pointer:fine)').matches) return; document.querySelectorAll('.project-card, .tool-card, .interest-card').forEach(card => { card.addEventListener('pointermove', event => { const rect = card.getBoundingClientRect(); card.style.transform = `perspective(700px) rotateX(${-(event.clientY - rect.top - rect.height / 2) / 45}deg) rotateY(${(event.clientX - rect.left - rect.width / 2) / 45}deg) translateY(-3px)`; }); card.addEventListener('pointerleave', () => { card.style.transform = ''; }); }); })();
+(() => {
+  const cards = document.querySelectorAll('.project-card, .tool-card, .interest-card');
+  if (!cards.length) return;
+
+  cards.forEach(card => {
+    card.addEventListener('pointerenter', () => {
+      card.style.transform = 'translateY(-6px) scale(1.01)';
+      card.style.boxShadow = '0 18px 38px rgba(0, 0, 0, 0.18)';
+      card.style.borderColor = 'var(--accent)';
+    });
+
+    card.addEventListener('pointerleave', () => {
+      card.style.transform = '';
+      card.style.boxShadow = '';
+      card.style.borderColor = '';
+    });
+  });
+})();

@@ -28,21 +28,5 @@
       target.appendChild(word);
     });
 
-    target.addEventListener('pointermove', event => {
-      const rect = target.getBoundingClientRect();
-      const x = (event.clientX - rect.left) / rect.width - .5;
-      const y = (event.clientY - rect.top) / rect.height - .5;
-      target.style.setProperty('--text-rotate-x', `${y * -5}deg`);
-      target.style.setProperty('--text-rotate-y', `${x * 7}deg`);
-      target.style.setProperty('--text-shift-x', `${x * 8}px`);
-      target.style.setProperty('--text-shift-y', `${y * 5}px`);
-    }, { passive: true });
-
-    target.addEventListener('pointerleave', () => {
-      target.style.setProperty('--text-rotate-x', '0deg');
-      target.style.setProperty('--text-rotate-y', '0deg');
-      target.style.setProperty('--text-shift-x', '0px');
-      target.style.setProperty('--text-shift-y', '0px');
-    });
   });
 })();
