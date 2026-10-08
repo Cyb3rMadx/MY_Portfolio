@@ -21,8 +21,8 @@ The server prints a generated admin username and password once. Open `/admin` an
 1. Revoke the GitHub token that was pasted into chat. It is compromised and must not be used in a repository, shell command, or environment variable.
 2. Push this project using a newly authenticated Git client or GitHub's normal sign-in flow. Never commit `.env` or credentials.
 3. Create a Render web service from the repository. `render.yaml` documents the service.
-4. In the Render service's **Environment** settings, set `ADMIN_PASSWORD` to a strong password and save it as a secret. The username is `RIJAN`. Keep the password out of this public repository; Render retains the environment value across redeploys. Production refuses to start if either admin variable is missing.
-5. Visit `/api/health`, then sign in at `/admin` with username `RIJAN` and the password set in Render.
+4. Sync the Render Blueprint. Render generates `ADMIN_PANEL_USER` and `ADMIN_PANEL_PASSWORD` once and retains them across redeploys. View both values in the service's **Environment** settings to sign in. Production refuses to start if either variable is missing.
+5. Visit `/api/health`, then sign in at `/admin` with the generated values. Remove any obsolete `ADMIN_USER` or `ADMIN_PASSWORD` variables from the Render service after the new deployment is healthy.
 
 The backend stores message content, sender name/email, user-agent, referrer, and a salted one-way IP hash. It does not store raw IP addresses. Messages are automatically deleted after 31 days. Update the public privacy wording and retention period before inviting real visitors.
 

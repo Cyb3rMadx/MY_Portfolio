@@ -28,12 +28,14 @@ function writeMessages(messages) {
   fs.renameSync(temporaryFile, messagesFile);
 }
 function getAdminCredentials() {
-  if (process.env.ADMIN_USER && process.env.ADMIN_PASSWORD) return { user: process.env.ADMIN_USER, password: process.env.ADMIN_PASSWORD };
+  if (process.env.ADMIN_PANEL_USER && process.env.ADMIN_PANEL_PASSWORD) {
+    return { user: process.env.ADMIN_PANEL_USER, password: process.env.ADMIN_PANEL_PASSWORD };
+  }
   if (process.env.NODE_ENV === 'production') {
-    throw new Error('ADMIN_USER and ADMIN_PASSWORD must both be configured in production.');
+    throw new Error('ADMIN_PANEL_USER and ADMIN_PANEL_PASSWORD must both be configured in production.');
   }
   if (fs.existsSync(credentialsFile)) return JSON.parse(fs.readFileSync(credentialsFile, 'utf8'));
-  const generated = { user: 'RIJAN', password: crypto.randomBytes(18).toString('base64url') };
+  const generated = { user: crypto.randomBytes(9).toString('base64url'), password: crypto.randomBytes(18).toString('base64url') };
   fs.writeFileSync(credentialsFile, `${JSON.stringify(generated)}\n`, { mode: 0o600 });
   console.log(`Admin panel: http://127.0.0.1:${port}/admin`);
   console.log(`Admin username: ${generated.user}`);

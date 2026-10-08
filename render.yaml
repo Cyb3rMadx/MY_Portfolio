@@ -11,9 +11,9 @@ services:
         value: production
       - key: IP_HASH_SALT
         sync: false
-      - key: ADMIN_USER
-        value: RIJAN
-      - key: ADMIN_PASSWORD
-        sync: false
+      - key: ADMIN_PANEL_USER
+        generateValue: true
+      - key: ADMIN_PANEL_PASSWORD
+        generateValue: true
       - key: CONTACT_TO_EMAIL
         value: business.rijan.np@gmail.com
