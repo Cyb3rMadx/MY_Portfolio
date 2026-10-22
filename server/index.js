@@ -32,7 +32,8 @@ function getAdminCredentials() {
     return { user: process.env.ADMIN_PANEL_USER, password: process.env.ADMIN_PANEL_PASSWORD };
   }
   if (process.env.NODE_ENV === 'production') {
-    throw new Error('ADMIN_PANEL_USER and ADMIN_PANEL_PASSWORD must both be configured in production.');
+    console.warn('Admin panel disabled: ADMIN_PANEL_USER and ADMIN_PANEL_PASSWORD are not configured.');
+    return null;
   }
   if (fs.existsSync(credentialsFile)) return JSON.parse(fs.readFileSync(credentialsFile, 'utf8'));
   const generated = { user: crypto.randomBytes(9).toString('base64url'), password: crypto.randomBytes(18).toString('base64url') };
@@ -83,19 +84,23 @@ app.post('/api/contact', (req, res) => {
   messages.unshift(item); writeMessages(messages);
   res.status(201).json({ ok: true, id: item.id });
 });
-app.get('/admin/login', (req, res) => res.send(loginPage()));
-app.post('/admin/login', (req, res) => {
-  if (req.body.username !== admin.user || req.body.password !== admin.password) return res.status(401).send(loginPage('Incorrect username or password.'));
-  const token = crypto.randomBytes(32).toString('hex');
-  sessions.set(token, Date.now() + 8 * 60 * 60 * 1000);
-  res.set('Set-Cookie', `admin_session=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=28800${process.env.NODE_ENV === 'production' ? '; Secure' : ''}`);
-  res.redirect('/admin');
-});
-app.post('/admin/logout', requireSession, (req, res) => { sessions.delete(cookieValue(req, 'admin_session')); res.set('Set-Cookie', 'admin_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0'); res.redirect('/admin/login'); });
-app.get('/admin', requireSession, (req, res) => {
-  const rows = readMessages().map(row => `<tr><td>${escapeHtml(row.id.slice(0, 8))}</td><td>${escapeHtml(row.createdAt)}</td><td>${escapeHtml(row.name)}</td><td><a href="mailto:${escapeHtml(row.email)}">${escapeHtml(row.email)}</a></td><td>${escapeHtml(row.message)}</td><td class="mono">${escapeHtml(row.ipHash.slice(0, 12))}…</td><td>${escapeHtml(row.status)}</td></tr>`).join('');
-  res.send(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Portfolio messages</title><style>body{margin:0;padding:32px;background:#081015;color:#edf4f4;font:14px system-ui}h1{font-size:28px}p{color:#9aaeb7}.top{display:flex;justify-content:space-between;gap:16px;align-items:center}.logout{padding:9px 12px;border:1px solid #29404a;border-radius:6px;background:transparent;color:#edf4f4;cursor:pointer}.table-wrap{overflow:auto}table{width:100%;min-width:900px;border-collapse:collapse}th,td{text-align:left;vertical-align:top;padding:12px;border:1px solid #20323a}th{color:#65e6c2}td{white-space:pre-wrap}.mono{font-family:monospace;color:#f2b86b}</style></head><body><div class="top"><div><h1>Portfolio inbox</h1><p>Messages are stored on this server for ${retentionDays} days. IP values are salted one-way hashes for abuse protection.</p></div><form method="post" action="/admin/logout"><button class="logout" type="submit">Log out</button></form></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>Received</th><th>Name</th><th>Email</th><th>Message</th><th>IP hash</th><th>Status</th></tr></thead><tbody>${rows || '<tr><td colspan="7">No messages yet.</td></tr>'}</tbody></table></div></body></html>`);
-});
+if (admin) {
+  app.get('/admin/login', (req, res) => res.send(loginPage()));
+  app.post('/admin/login', (req, res) => {
+    if (req.body.username !== admin.user || req.body.password !== admin.password) return res.status(401).send(loginPage('Incorrect username or password.'));
+    const token = crypto.randomBytes(32).toString('hex');
+    sessions.set(token, Date.now() + 8 * 60 * 60 * 1000);
+    res.set('Set-Cookie', `admin_session=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=28800${process.env.NODE_ENV === 'production' ? '; Secure' : ''}`);
+    res.redirect('/admin');
+  });
+  app.post('/admin/logout', requireSession, (req, res) => { sessions.delete(cookieValue(req, 'admin_session')); res.set('Set-Cookie', 'admin_session=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0'); res.redirect('/admin/login'); });
+  app.get('/admin', requireSession, (req, res) => {
+    const rows = readMessages().map(row => `<tr><td>${escapeHtml(row.id.slice(0, 8))}</td><td>${escapeHtml(row.createdAt)}</td><td>${escapeHtml(row.name)}</td><td><a href="mailto:${escapeHtml(row.email)}">${escapeHtml(row.email)}</a></td><td>${escapeHtml(row.message)}</td><td class="mono">${escapeHtml(row.ipHash.slice(0, 12))}…</td><td>${escapeHtml(row.status)}</td></tr>`).join('');
+    res.send(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Portfolio messages</title><style>body{margin:0;padding:32px;background:#081015;color:#edf4f4;font:14px system-ui}h1{font-size:28px}p{color:#9aaeb7}.top{display:flex;justify-content:space-between;gap:16px;align-items:center}.logout{padding:9px 12px;border:1px solid #29404a;border-radius:6px;background:transparent;color:#edf4f4;cursor:pointer}.table-wrap{overflow:auto}table{width:100%;min-width:900px;border-collapse:collapse}th,td{text-align:left;vertical-align:top;padding:12px;border:1px solid #20323a}th{color:#65e6c2}td{white-space:pre-wrap}.mono{font-family:monospace;color:#f2b86b}</style></head><body><div class="top"><div><h1>Portfolio inbox</h1><p>Messages are stored on this server for ${retentionDays} days. IP values are salted one-way hashes for abuse protection.</p></div><form method="post" action="/admin/logout"><button class="logout" type="submit">Log out</button></form></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>Received</th><th>Name</th><th>Email</th><th>Message</th><th>IP hash</th><th>Status</th></tr></thead><tbody>${rows || '<tr><td colspan="7">No messages yet.</td></tr>'}</tbody></table></div></body></html>`);
+  });
+} else {
+  app.use('/admin', (req, res) => res.status(404).send('Not found'));
+}
 app.use('/server', (req, res) => res.status(404).send('Not found'));
 app.use(express.static(siteRoot, { index: 'index.html' }));
 setInterval(() => { const cutoff = Date.now() - retentionDays * 24 * 60 * 60 * 1000; writeMessages(readMessages().filter(item => Date.parse(item.createdAt) >= cutoff)); }, 24 * 60 * 60 * 1000).unref();
