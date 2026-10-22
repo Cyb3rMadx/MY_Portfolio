@@ -307,6 +307,6 @@ var SITE_DATA = {
     title: "Rijan Adhikari, Software Developer & Cybersecurity Enthusiast",
     description:
       "Portfolio of Rijan Adhikari, a self-taught software developer and cybersecurity enthusiast from Nepal, building projects and learning security one lab at a time.",
-    url: ""
+    url: "https://rijan-adhikari.onrender.com/"
   }
 };
